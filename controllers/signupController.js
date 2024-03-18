@@ -1,7 +1,6 @@
 const userModel = require("../models/userModel.js");
 
 const signupController = async (req, res) => {
-    console.log("Hiiiii");
     try {
         
         const userdata = {
