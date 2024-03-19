@@ -6,14 +6,7 @@ const getNotesController = async (req, res) => {
 
     try {
         const loggedInUserId = req.session.userId; // Assuming you have the user ID in the request object
-
-        // Find the user
-        const user = await userModel.findById(loggedInUserId);
         
-        if (!user) {
-            return res.json({ message: "User not found" });
-        }
-
         // Check if the user has notes
         let userNotes = await noteModel.findOne({ userId: loggedInUserId });
 

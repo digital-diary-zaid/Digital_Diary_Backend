@@ -3,6 +3,8 @@ require('dotenv').config();
 const express = require('express');
 const expressSession = require("express-session");
 const app = express();
+const authMiddleware = require("./middleware/authMiddleware");
+
 
 //Middleware
 app.use(express.json());
@@ -24,6 +26,8 @@ const signupController=require("./controllers/signupController.js")
 const loginController=require("./controllers/loginController.js")
 const saveNoteController=require("./controllers/saveNoteController.js")
 const getNotesController=require("./controllers/getNotesController.js")
+const logoutController=require("./controllers/logoutController.js")
+const checkingAuthenticationController=require("./controllers/checkingAuthenticationController.js");
 
 //Port Details
 const port = process.env.PORT || 4000
@@ -35,6 +39,8 @@ app.listen(port, () => {
 // Routes
 app.post("/signup",signupController);
 app.post("/login",loginController);
-app.post("/addNote",saveNoteController);
-app.get("/getNotes",getNotesController);
+app.post("/addNote",authMiddleware,saveNoteController);
+app.get("/getNotes",authMiddleware,getNotesController);
+app.get("/logout",logoutController);
+app.get("/checkAuth",authMiddleware,checkingAuthenticationController);
 

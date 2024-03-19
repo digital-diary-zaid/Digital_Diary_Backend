@@ -11,15 +11,6 @@ const saveNoteController = async (req, res) => {
         const day = currentDate.getDate();
         
         const date = `${year}-${month}-${day}`;
-        console.log(date);
-
-        // Find the user
-        const user = await userModel.findById(loggedInUserId);
-        
-        if (!user) {
-            return res.json({ message: "User not found" });
-        }
-
         // Check if the user already has notes
         let userNotes = await noteModel.findOne({ userId: loggedInUserId });
 
