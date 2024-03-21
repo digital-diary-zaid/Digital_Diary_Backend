@@ -9,7 +9,7 @@ const checkingAuthenticationController = async (req, res) => {
         }
     } catch (error) {
         console.error("Authentication error:", error);
-        return res.status(500).json({ message: "User is Authenticated" });
+        return res.json({ message: "User is not Authenticated" });
     }
 }
 

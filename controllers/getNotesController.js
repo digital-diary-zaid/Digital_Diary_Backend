@@ -2,7 +2,6 @@ const noteModel = require("../models/noteModel.js");
 const userModel = require("../models/userModel.js");
 
 const getNotesController = async (req, res) => {
-    console.log("Get Note");
 
     try {
         const loggedInUserId = req.session.userId; // Assuming you have the user ID in the request object
@@ -14,7 +13,6 @@ const getNotesController = async (req, res) => {
         if (!userNotes) {
             return res.json({ message: "No notes" });
         } else {
-            console.log(userNotes);
             return res.json({ message: "Successfull", userNotes });
         }
 
