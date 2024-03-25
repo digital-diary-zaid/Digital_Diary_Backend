@@ -29,6 +29,8 @@ const getNotesController=require("./controllers/getNotesController.js")
 const logoutController=require("./controllers/logoutController.js")
 const checkingAuthenticationController=require("./controllers/checkingAuthenticationController.js");
 const getNoteByUserController=require("./controllers/getNoteByUserController.js");
+const deleteNotesByIdController=require("./controllers/deleteNotesByIdController.js")
+
 //Port Details
 const port = process.env.PORT || 4000
 app.listen(port, () => {
@@ -44,4 +46,5 @@ app.get("/getNotes",authMiddleware,getNotesController);
 app.get("/logout",logoutController);
 app.get("/checkAuth",authMiddleware,checkingAuthenticationController);
 app.post("/viewNoteByUser",authMiddleware,getNoteByUserController);
+app.post("/deleteNotesById",authMiddleware,deleteNotesByIdController);
 
