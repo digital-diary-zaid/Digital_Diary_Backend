@@ -1,3 +1,5 @@
+// It is  not used as I am drctly showing tha note data while passing it to viewpage ; instaed of making a backend call
+
 const noteModel = require("../models/noteModel.js");
 
 const getNoteByUserController = async (req, res) => {
