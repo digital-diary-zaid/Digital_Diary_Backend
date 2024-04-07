@@ -10,7 +10,7 @@ const getNotesController = async (req, res) => {
         let userNotes = await noteModel.findOne({ userId: loggedInUserId });
 
         // If the user does not have any notes
-        if (!userNotes) {
+        if (!userNotes.notes || userNotes.notes.length <=0) {
             return res.json({ message: "No notes" });
         } else {
             return res.json({ message: "Successfull", userNotes });
