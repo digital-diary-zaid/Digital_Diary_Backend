@@ -19,7 +19,9 @@ app.use("*",(req,res,next)=>{
   next();
 });
 
-
+app.get('/', (req, res) => {
+  res.send('Welcome to your Express server!');
+})
 
 //Controllers
 const signupController=require("./controllers/signupController.js")
