@@ -4,6 +4,8 @@ const express = require('express');
 const expressSession = require("express-session");
 const app = express();
 const authMiddleware = require("./middleware/authMiddleware");
+const cors=require('cors');
+app.use(cors());
 
 
 //Middleware
