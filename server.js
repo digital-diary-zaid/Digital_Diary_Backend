@@ -5,7 +5,11 @@ const expressSession = require("express-session");
 const app = express();
 const authMiddleware = require("./middleware/authMiddleware");
 const cors=require('cors');
-app.use(cors());
+app.use(cors({
+  origin: 'https://https://661416f2ecc4eb0efb405503--diztaldiary.netlify.app/',
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
 
 //Middleware
