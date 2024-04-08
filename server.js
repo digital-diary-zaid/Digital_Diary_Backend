@@ -45,7 +45,7 @@ app.listen(port, () => {
 app.post("/signup",signupController);
 app.post("/login",loginController);
 app.post("/addNote",authMiddleware,saveNoteController);
-app.get("/getNotes",authMiddleware,getNotesController);
+app.get("/getNotes",getNotesController);
 app.get("/logout",logoutController);
 app.get("/checkAuth",authMiddleware,checkingAuthenticationController);
 app.post("/viewNoteByUser",authMiddleware,getNoteByUserController);
