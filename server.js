@@ -6,7 +6,7 @@ const app = express();
 const authMiddleware = require("./middleware/authMiddleware");
 const cors=require('cors');
 app.use(cors({
-  origin: 'https://diztaldiary.netlify.app/',
+  origin: 'https://diztaldiary.netlify.app',
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
