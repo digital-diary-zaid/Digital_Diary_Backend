@@ -2,11 +2,13 @@ require('./db/dbinit.js');
 require('dotenv').config();
 const express = require('express');
 const expressSession = require("express-session");
+const cors = require('cors');
 const app = express();
 const authMiddleware = require("./middleware/authMiddleware");
 
 
 //Middleware
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(expressSession({
