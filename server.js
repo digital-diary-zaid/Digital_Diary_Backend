@@ -16,6 +16,7 @@ app.use(cors({
 //Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.set("trust proxy", 1);
 app.use(expressSession({
   secret:'secret', // Use a secure secret key
     resave: false, // Avoid resaving sessions if not modified
@@ -23,9 +24,9 @@ app.use(expressSession({
     proxy:true,
     name: 'DigitalDiary',
     cookie: {
-        secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+        secure: true, // Use secure cookies in production
         httpOnly: true, // Prevents client-side JavaScript from accessing the session cookie
-        sameSite: 'strict' // Sets the cookie's same-site attribute
+        sameSite: 'none' // Sets the cookie's same-site attribute
     },
     store: MongoStore.create({
       mongoUrl: process.env.DBURL, // Use the MongoDB connection URL from the .env file
