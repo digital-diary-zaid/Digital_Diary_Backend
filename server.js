@@ -40,7 +40,7 @@ app.listen(port, () => {
 
 // Routes
 app.post("/signup",signupController);
-app.post("/api/login",loginController);
+app.post("/login",loginController);
 app.post("/addNote",authMiddleware,saveNoteController);
 app.get("/api/getNotes",authMiddleware,getNotesController);
 app.get("/logout",logoutController);
