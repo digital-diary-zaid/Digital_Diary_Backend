@@ -7,10 +7,10 @@ const app = express();
 const authMiddleware = require("./middleware/authMiddleware");
 
 app.use(cors({
-  origin: "https://digital-diary-ui.vercel.app/",
-  credentials:"true"
-}))
-
+  origin: 'https://digital-diary-ui.vercel.app',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify the methods you want to allow
+  credentials: true // Allow credentials if needed
+}));
 //Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
