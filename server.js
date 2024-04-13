@@ -4,29 +4,6 @@ const express = require('express');
 const expressSession = require("express-session");
 const app = express();
 const authMiddleware = require("./middleware/authMiddleware");
-const cors=require('cors');
-
-
-
-// Define the frontend URL (origin) allowed to access the backend
-const allowedOrigins = ['https://diztaldiary.netlify.app'];
-
-// Configure CORS with options
-const corsOptions = {
-    origin: (origin, callback) => {
-        if (allowedOrigins.includes(origin) || !origin) {
-            callback(null, true); // Allow the request
-        } else {
-            callback(new Error('Not allowed by CORS')); // Reject the request
-        }
-    },
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed methods
-    allowedHeaders: ['Content-Type', 'Authorization'], // Specify allowed headers
-};
-
-// Use the CORS middleware with the configured options
-app.use(cors(corsOptions));
-
 
 //Middleware
 app.use(express.json());
