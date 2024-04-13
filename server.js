@@ -20,6 +20,8 @@ app.use(expressSession({
   secret:'secret', // Use a secure secret key
     resave: false, // Avoid resaving sessions if not modified
     saveUninitialized: false, // Avoid saving uninitialized sessions
+    proxy:true,
+    name: 'DigitalDiary',
     cookie: {
         secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
         httpOnly: true, // Prevents client-side JavaScript from accessing the session cookie
