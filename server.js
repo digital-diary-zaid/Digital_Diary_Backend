@@ -2,9 +2,11 @@ require('./db/dbinit.js');
 require('dotenv').config();
 const express = require('express');
 const expressSession = require("express-session");
+const MongoStore = require('connect-mongo')(expressSession);
 const cors = require("cors");
 const app = express();
 const authMiddleware = require("./middleware/authMiddleware");
+const mongooseConnection = require('./dbinit'); 
 
 app.use(cors({
   origin: 'https://digital-diary-ui.vercel.app',
@@ -14,9 +16,22 @@ app.use(cors({
 //Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(expressSession({
-  secret:"secret"
+
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'your-secret-key', // Use a secure secret key
+  resave: false, // Avoid resaving sessions if not modified
+  saveUninitialized: false, // Avoid saving uninitialized sessions
+  cookie: {
+      secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+      httpOnly: true, // Prevents client-side JavaScript from accessing the session cookie
+      sameSite: 'strict' // Sets the cookie's same-site attribute
+  },
+  store: new MongoStore({
+      mongooseConnection, // Pass the Mongoose connection from dbinit.js
+      collection: 'sessions' // Specify the name of the collection for session data
+  })
 }));
+
 global.loggedIn = null;
 
 app.use("*",(req,res,next)=>{
