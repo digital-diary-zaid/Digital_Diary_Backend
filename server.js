@@ -25,7 +25,7 @@ app.use(expressSession({
         httpOnly: true, // Prevents client-side JavaScript from accessing the session cookie
         sameSite: 'strict' // Sets the cookie's same-site attribute
     },
-    store: new MongoStore({
+    store: MongoStore.create({
       mongoUrl: process.env.DBURL, // Use the MongoDB connection URL from the .env file
       collectionName: 'sessions', // Specify the name of the collection for session data
   })
