@@ -2,8 +2,14 @@ require('./db/dbinit.js');
 require('dotenv').config();
 const express = require('express');
 const expressSession = require("express-session");
+const cors = require("cors");
 const app = express();
 const authMiddleware = require("./middleware/authMiddleware");
+
+app.use(cors({
+  origin: "https://digital-diary-ui.vercel.app/",
+  credentials:"true"
+}))
 
 //Middleware
 app.use(express.json());
