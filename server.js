@@ -14,7 +14,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // CORS configuration
 app.use(cors({
-  origin: 'https://diztaldiary.netlify.app/', // Replace with your Netlify URL
+  origin: 'https://diztaldiary.netlify.app/', // Replace with your Netlify URL  
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE' ,
   credentials: true,
 }));
 
