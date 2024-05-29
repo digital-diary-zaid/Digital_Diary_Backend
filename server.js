@@ -28,7 +28,7 @@ app.use(
       mongoUrl: process.env.MONGO_URI || "mongodb+srv://zaidalam0731:zaid@cluster0.s71ckpw.mongodb.net/Digital_Diary?retryWrites=true&w=majority",
     }),
     cookie: {
-      secure: false, // Set to true if using HTTPS
+      secure: process.env.NODE_ENV === 'production',
       httpOnly: true,
       sameSite: "lax",
       maxAge: 1000 * 60 * 60 * 24, // 1 day
