@@ -3,6 +3,7 @@
 
 
 const checkingAuthenticationController = async (req, res) => {
+    console.log("User Session ",req.session.userId)
     try {
         if (req.session.userId) {
         return res.json({ message: "User is Authenticated" });
