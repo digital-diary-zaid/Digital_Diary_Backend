@@ -1,6 +1,7 @@
 require("./db/dbinit.js");
 require("dotenv").config();
 const express = require("express");
+const expressSession = require("express-session");
 const cors = require('cors');
 const app = express();
 
@@ -28,6 +29,18 @@ app.use(cors({
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(expressSession({
+  name:"digitalDIary",
+  resave: true,
+  saveUninitialized: false,
+  secret: process.env.SESSION_SECRET,
+  cookie: {
+    secure:true,
+    httpOnly:true,
+    sameSite:"none"
+  }
+}))
 
 // Port Details
 const port = process.env.PORT || 4000;
