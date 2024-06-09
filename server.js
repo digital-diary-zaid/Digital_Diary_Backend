@@ -9,8 +9,7 @@ const authMiddleware = require("./middleware/authMiddleware");
 
 app.use(cors({ credentials: true, origin: 'https://diztaldiary.netlify.app' }));
 
-
-//Middleware
+// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -27,6 +26,11 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: store,
+    cookie: {
+      secure: process.env.NODE_ENV === 'production', // set to true if using https
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 // 1 day
+    }
   })
 );
 
