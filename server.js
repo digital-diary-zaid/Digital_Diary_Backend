@@ -2,17 +2,34 @@ require("./db/dbinit.js");
 require("dotenv").config();
 const express = require("express");
 const expressSession = require("express-session");
+const MongoSessionStore = require('connect-mongodb-session')(expressSession);
+const cors = require('cors');
 const app = express();
 const authMiddleware = require("./middleware/authMiddleware");
+
+app.use(cors({ credentials: true, origin: 'https://diztaldiary.netlify.app' }));
+
 
 //Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Session store configuration
+const store = new MongoSessionStore({
+  uri: process.env.DBURL,
+  collection: 'sessions',
+});
+
+// Session middleware
 app.use(
   expressSession({
-    secret: "secret",
+    secret: process.env.SESSION_SECRET || "secret",
+    resave: false,
+    saveUninitialized: false,
+    store: store,
   })
 );
+
 global.loggedIn = null;
 
 app.use("*", (req, res, next) => {
