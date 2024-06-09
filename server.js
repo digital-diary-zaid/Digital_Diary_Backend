@@ -37,7 +37,7 @@ app.use("*", (req, res, next) => {
   next();
 });
 
-//Controllers
+// Controllers
 const signupController = require("./controllers/signupController.js");
 const loginController = require("./controllers/loginController.js");
 const saveNoteController = require("./controllers/saveNoteController.js");
@@ -48,7 +48,7 @@ const getNoteByUserController = require("./controllers/getNoteByUserController.j
 const deleteNotesByIdController = require("./controllers/deleteNotesByIdController.js");
 const updateNoteController = require("./controllers/updateNoteController.js");
 
-//Port Details
+// Port Details
 const port = process.env.PORT || 4000;
 app.listen(port, () => {
   console.log("App is running at port " + port);
