@@ -1,12 +1,21 @@
 const noteModel = require("../models/noteModel.js");
+const { getSession } = require("../models/session.js");
 
 const getNotesController = async (req, res) => {
-    try {
-        const userId = req.userId;
+    const token = req.headers['authorization'];
 
-        if (!userId) {
+    if (!token) {
+        return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    try {
+        const session = await getSession(token);
+
+        if (!session) {
             return res.status(401).json({ message: "Unauthorized" });
         }
+
+        const userId = session.userId;
 
         const userNotes = await noteModel.find({ userId });
 

@@ -1,9 +1,14 @@
-const { sessionModel } = require("../models/session.js");
+const { getSession } = require("../models/session.js");
 
 const authMiddleware = async (req, res, next) => {
+    const token = req.headers['authorization'];
+
+    if (!token) {
+        return res.status(401).json({ message: "Unauthorized" });
+    }
+
     try {
-        const sessionId = req.sessionID;
-        const session = await sessionModel.findOne({ _id: sessionId });
+        const session = await getSession(token);
 
         if (!session) {
             return res.status(401).json({ message: "Unauthorized" });

@@ -1,6 +1,7 @@
 const userModel = require("../models/userModel.js");
 const bcrypt = require("bcrypt");
-const { sessionModel, createSession } = require('../models/session.js');
+const { createSession } = require('../models/session.js');
+const { v4: uuidv4 } = require('uuid');
 
 const loginController = async (req, res) => {
     const userCredentials = {
@@ -18,14 +19,17 @@ const loginController = async (req, res) => {
         const passwordMatch = await bcrypt.compare(userCredentials.password, user.password);
         
         if (passwordMatch) {
-            await createSession(user._id);
+            const token = uuidv4(); // Generate a unique token
+            await createSession(user._id, token);
+
             const userData = {
                 _id: user._id,
                 fullName: user.fullName,
                 email: user.email,
                 phoneNumber: user.phoneNumber,
             };
-            return res.json({ message: "Login successful", userData });
+
+            return res.json({ message: "Login successful", userData, token });
         } else {
             return res.status(401).json({ message: "Incorrect password" });
         }

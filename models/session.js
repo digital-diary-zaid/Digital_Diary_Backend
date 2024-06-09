@@ -1,25 +1,28 @@
 const mongoose = require('mongoose');
 
-// Define the schema for the session collection
 const sessionSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'User'
     },
+    token: {
+        type: String,
+        required: true,
+        unique: true
+    },
     createdAt: {
         type: Date,
         default: Date.now,
-        expires: 3600 // Optional: set session expiration time (e.g., 1 hour)
+        expires: '1h' // Optional: set session expiration time (e.g., 1 hour)
     }
 });
 
-// Create a model for the session collection
-const sessionModel = mongoose.model('Session', sessionSchema);
+const Session = mongoose.model('Session', sessionSchema);
 
-const createSession = async (userId) => {
+const createSession = async (userId, token) => {
     try {
-        const session = new sessionModel({ userId });
+        const session = new Session({ userId, token });
         await session.save();
         console.log('Session created:', session);
     } catch (error) {
@@ -27,13 +30,22 @@ const createSession = async (userId) => {
     }
 };
 
-const deleteSession = async (sessionId) => {
+const deleteSession = async (token) => {
     try {
-        await sessionModel.findByIdAndDelete(sessionId);
+        await Session.findOneAndDelete({ token });
         console.log('Session deleted');
     } catch (error) {
         console.error('Error deleting session:', error);
     }
 };
 
-module.exports = { sessionModel, createSession, deleteSession };
+const getSession = async (token) => {
+    try {
+        return await Session.findOne({ token });
+    } catch (error) {
+        console.error('Error getting session:', error);
+        return null;
+    }
+};
+
+module.exports = { Session, createSession, deleteSession, getSession };
