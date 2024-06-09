@@ -29,17 +29,10 @@ app.use(
     cookie: {
       secure: process.env.NODE_ENV === 'production', // set to true if using https
       httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24 // 1 day
-    }
+      maxAge: 1000 * 60 * 60 * 24, // 1 day
+    },
   })
 );
-
-global.loggedIn = null;
-
-app.use("*", (req, res, next) => {
-  loggedIn = req.session.userId;
-  next();
-});
 
 // Controllers
 const signupController = require("./controllers/signupController.js");
