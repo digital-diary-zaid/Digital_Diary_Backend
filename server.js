@@ -39,7 +39,8 @@ app.use(expressSession({
   saveUninitialized: false,
   store: store,
   cookie: {
-    maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
+    maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+    sameSite: 'none' // Adjust as needed, usually 'strict' or 'lax' for most cases
   }
 }));
 
