@@ -20,7 +20,7 @@ const loginController = async (req, res) => {
         
         if (passwordMatch) {
             req.session.userId = user._id; // Set userId in session
-            console.log("Req Session: ",req.session.userId);
+            console.log("Req Session After Login: ",req.session.userId);
             const userData = {
                 _id: user._id,
                 fullName: user.fullName,
@@ -28,7 +28,7 @@ const loginController = async (req, res) => {
                 phoneNumber: user.phoneNumber,
             };
             console.log(req.session.userId)
-            return res.json({ message: "Login successful", userData, token });
+            return res.json({ message: "Login successful", userData });
         } else {
             return res.status(401).json({ message: "Incorrect password" });
         }
