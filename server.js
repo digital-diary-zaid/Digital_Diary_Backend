@@ -36,6 +36,9 @@ app.use(
     },
   })
 );
+store.on('error', function(error) {
+  console.error('MongoDB session store error:', error);
+});
 
 // Controllers
 const signupController = require("./controllers/signupController.js");
