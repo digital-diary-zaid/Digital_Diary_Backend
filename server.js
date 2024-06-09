@@ -18,18 +18,21 @@ const store = new MongoSessionStore({
   uri: process.env.DBURL,
   collection: 'sessions',
 });
-
+app.set("trust proxy", 1);
 // Session middleware
 app.use(
   expressSession({
     secret: process.env.SESSION_SECRET || "secret",
     resave: false,
     saveUninitialized: false,
+    proxy:true,
+    name: 'digZtalDiary',
     store: store,
     cookie: {
-      secure: process.env.NODE_ENV === 'production', // set to true if using https
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24, // 1 day
+      secure: true, // set to true if using https
+      httpOnly: false,
+      maxAge: 1000 * 60 * 60 * 24, // 1 day,
+      sameSite: 'none'
     },
   })
 );
