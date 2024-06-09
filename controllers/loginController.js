@@ -19,16 +19,15 @@ const loginController = async (req, res) => {
         const passwordMatch = await bcrypt.compare(userCredentials.password, user.password);
         
         if (passwordMatch) {
-            const token = uuidv4(); // Generate a unique token
-            await createSession(user._id, token);
-
+            req.session.userId = user._id; // Set userId in session
+            console.log("Req Session: ",req.session.userId);
             const userData = {
                 _id: user._id,
                 fullName: user.fullName,
                 email: user.email,
                 phoneNumber: user.phoneNumber,
             };
-
+            console.log(req.session.userId)
             return res.json({ message: "Login successful", userData, token });
         } else {
             return res.status(401).json({ message: "Incorrect password" });
