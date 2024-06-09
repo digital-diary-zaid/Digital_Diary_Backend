@@ -1,13 +1,13 @@
 const userModel = require("../models/userModel.js");
 
 const authMiddleware = async (req, res, next) => {
-  console.log(req.session.userId);
-    if (!req.session.userId) {
+    const sessionData = await req.sessionStore.get(req.sessionID); // Retrieve session data
+    if (!sessionData || !sessionData.userId) {
         return res.status(401).json({ message: "Unauthorized" });
     }
     
     try {
-        const user = await userModel.findById(req.session.userId);
+        const user = await userModel.findById(sessionData.userId);
         if (!user) {
             return res.status(401).json({ message: "Unauthorized" });
         }
