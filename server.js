@@ -1,44 +1,10 @@
-require('dotenv').config();
 require("./db/dbinit.js");
+require("dotenv").config();
 const express = require("express");
+const cors = require('cors');
 const expressSession = require("express-session");
 const MongoSessionStore = require('connect-mongodb-session')(expressSession);
-const cors = require('cors');
-
 const app = express();
-const authMiddleware = require("./middleware/authMiddleware");
-
-app.use(cors({
-  origin: "https://diztaldiary.netlify.app",
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
-}));
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// Session store configuration
-const store = new MongoSessionStore({
-  uri: process.env.DBURL,
-  collection: 'sessions',
-});
-
-// Session middleware
-app.use(
-  expressSession({
-    secret: process.env.SESSION_SECRET || "secret",
-    resave: false,
-    saveUninitialized: false,
-    store: store,
-  })
-);
-
-global.loggedIn = null;
-
-app.use("*", (req, res, next) => {
-  loggedIn = req.session.userId;
-  next();
-});
 
 // Controllers
 const signupController = require("./controllers/signupController.js");
@@ -51,6 +17,33 @@ const getNoteByUserController = require("./controllers/getNoteByUserController.j
 const deleteNotesByIdController = require("./controllers/deleteNotesByIdController.js");
 const updateNoteController = require("./controllers/updateNoteController.js");
 
+// Middleware
+const authMiddleware = require("./middleware/authMiddleware.js");
+
+// CORS configuration
+app.use(cors({
+  origin: "https://diztaldiary.netlify.app",
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}));
+
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Session store configuration
+const store = new MongoSessionStore({
+  uri: process.env.DBURL,
+  collection: 'sessions',
+});
+
+// Session middleware
+app.use(expressSession({
+  secret: 'secret',
+  resave: false,
+  saveUninitialized: false,
+  store: store
+}));
 
 // Port Details
 const port = process.env.PORT || 4000;

@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 
+// Define the schema for the session collection
 const sessionSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'User'
+        required: true
     },
     token: {
         type: String,
@@ -14,38 +14,45 @@ const sessionSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now,
-        expires: '1h' // Optional: set session expiration time (e.g., 1 hour)
+        expires: '7d' // Optional: Automatically remove the session after 7 days
     }
 });
 
-const Session = mongoose.model('Session', sessionSchema);
+// Create a model for the session collection
+const sessionModel = mongoose.model('Session', sessionSchema);
 
-const createSession = async (userId, token) => {
-    try {
-        const session = new Session({ userId, token });
-        await session.save();
-        console.log('Session created:', session);
-    } catch (error) {
-        console.error('Error creating session:', error);
-    }
-};
-
-const deleteSession = async (token) => {
-    try {
-        await Session.findOneAndDelete({ token });
-        console.log('Session deleted');
-    } catch (error) {
-        console.error('Error deleting session:', error);
-    }
-};
-
+// Function to get session by token
 const getSession = async (token) => {
     try {
-        return await Session.findOne({ token });
+        const session = await sessionModel.findOne({ token });
+        return session;
     } catch (error) {
         console.error('Error getting session:', error);
         return null;
     }
 };
 
-module.exports = { Session, createSession, deleteSession, getSession };
+// Create a new session document when user logs in
+const createSession = async (userId, token) => {
+    try {
+        const session = new sessionModel({ userId, token });
+        await session.save();
+        console.log('Session created:', session);
+        return session;
+    } catch (error) {
+        console.error('Error creating session:', error);
+        return null;
+    }
+};
+
+// Delete a session document when user logs out or session expires
+const deleteSession = async (token) => {
+    try {
+        await sessionModel.findOneAndDelete({ token });
+        console.log('Session deleted');
+    } catch (error) {
+        console.error('Error deleting session:', error);
+    }
+};
+
+module.exports = { sessionModel, getSession, createSession, deleteSession };

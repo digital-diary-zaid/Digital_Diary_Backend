@@ -11,24 +11,28 @@ const loginController = async (req, res) => {
 
     try {
         const user = await userModel.findOne({ email: userCredentials.email });
-        
+
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
 
         const passwordMatch = await bcrypt.compare(userCredentials.password, user.password);
-        
+
         if (passwordMatch) {
-            req.session.userId = user._id; // Set userId in session
-            console.log("Req Session After Login: ",req.session.userId);
+            const token = uuidv4(); // Generate a unique token
+            await createSession(user._id, token); // Save the session in the database with the token
+
+            req.session.token = token; // Set the token in the session
+            console.log("Req Session After Login: ", req.session.token);
+
             const userData = {
                 _id: user._id,
                 fullName: user.fullName,
                 email: user.email,
                 phoneNumber: user.phoneNumber,
             };
-            console.log(req.session.userId)
-            return res.json({ message: "Login successful", userData });
+
+            return res.json({ message: "Login successful", userData, token });
         } else {
             return res.status(401).json({ message: "Incorrect password" });
         }
