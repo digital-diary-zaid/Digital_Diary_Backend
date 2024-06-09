@@ -1,29 +1,24 @@
 const noteModel = require("../models/noteModel.js");
-const userModel = require("../models/userModel.js");
-const {sessionModel,createSession} = require('../models/session.js');
 
 const getNotesController = async (req, res) => {
-  try {
-    // Retrieve session data from MongoDB session collection
-    const loggedInUserId = await sessionModel.find();
+    try {
+        const userId = req.userId;
 
-    if (!loggedInUserId) {
-      return res.status(401).json({ message: "Unauthorized" });
+        if (!userId) {
+            return res.status(401).json({ message: "Unauthorized" });
+        }
+
+        const userNotes = await noteModel.find({ userId });
+
+        if (userNotes.length === 0) {
+            return res.json({ message: "No notes" });
+        } else {
+            return res.json({ message: "Successfully retrieved notes", notes: userNotes });
+        }
+    } catch (error) {
+        console.error("Error getting notes:", error);
+        return res.status(500).json({ message: "Error getting notes" });
     }
-
-    // Check if the user has notes
-    let userNotes = await noteModel.findOne({ userId: loggedInUserId });
-
-    // If the user does not have any notes
-    if (!userNotes?.notes || userNotes?.notes?.length <= 0) {
-      return res.json({ message: "No notes" });
-    } else {
-      return res.json({ message: "Successfully retrieved notes", userNotes });
-    }
-  } catch (error) {
-    console.error("Error getting notes:", error);
-    return res.status(500).json({ message: "Error getting notes" });
-  }
 };
 
 module.exports = getNotesController;

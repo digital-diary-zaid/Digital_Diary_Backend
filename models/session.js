@@ -3,16 +3,20 @@ const mongoose = require('mongoose');
 // Define the schema for the session collection
 const sessionSchema = new mongoose.Schema({
     userId: {
-        type: String,
-        required: true
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'User'
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+        expires: 3600 // Optional: set session expiration time (e.g., 1 hour)
     }
 });
 
 // Create a model for the session collection
-const sessionModel = mongoose.model('session', sessionSchema);
+const sessionModel = mongoose.model('Session', sessionSchema);
 
-// Example usage:
-// Create a new session document when user logs in
 const createSession = async (userId) => {
     try {
         const session = new sessionModel({ userId });
@@ -23,7 +27,6 @@ const createSession = async (userId) => {
     }
 };
 
-// Delete a session document when user logs out or session expires
 const deleteSession = async (sessionId) => {
     try {
         await sessionModel.findByIdAndDelete(sessionId);
@@ -33,4 +36,4 @@ const deleteSession = async (sessionId) => {
     }
 };
 
-module.exports = {sessionModel,createSession,deleteSession};
+module.exports = { sessionModel, createSession, deleteSession };

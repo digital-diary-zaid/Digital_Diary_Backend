@@ -7,12 +7,13 @@ const cors = require('cors');
 const app = express();
 const authMiddleware = require("./middleware/authMiddleware");
 
-//app.use(cors({ credentials: true, origin: 'https://diztaldiary.netlify.app' }));
+// CORS configuration
 app.use(cors({
   origin: "https://diztaldiary.netlify.app",
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials:"true"
-}))
+  credentials: true
+}));
+
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -25,7 +26,7 @@ const store = new MongoSessionStore({
 
 // Session middleware
 app.use(expressSession({
-  secret: 'secret',
+  secret: process.env.SESSION_SECRET || 'secret',
   resave: false,
   saveUninitialized: false,
   store: store
@@ -42,12 +43,6 @@ const getNoteByUserController = require("./controllers/getNoteByUserController.j
 const deleteNotesByIdController = require("./controllers/deleteNotesByIdController.js");
 const updateNoteController = require("./controllers/updateNoteController.js");
 
-// Port Details
-const port = process.env.PORT || 4000;
-app.listen(port, () => {
-  console.log("App is running at port " + port);
-});
-
 // Routes
 app.post("/signup", signupController);
 app.post("/login", loginController);
@@ -58,3 +53,9 @@ app.get("/checkAuth", authMiddleware, checkingAuthenticationController);
 app.post("/viewNoteByUser", authMiddleware, getNoteByUserController);
 app.post("/updateNote", authMiddleware, updateNoteController);
 app.post("/deleteNotesById", authMiddleware, deleteNotesByIdController);
+
+// Port Details
+const port = process.env.PORT || 4000;
+app.listen(port, () => {
+  console.log("App is running at port " + port);
+});

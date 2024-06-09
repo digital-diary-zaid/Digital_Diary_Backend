@@ -1,7 +1,6 @@
 const userModel = require("../models/userModel.js");
 const bcrypt = require("bcrypt");
-const {sessionModel,createSession} = require('../models/session.js');
-
+const { sessionModel, createSession } = require('../models/session.js');
 
 const loginController = async (req, res) => {
     const userCredentials = {
@@ -13,7 +12,7 @@ const loginController = async (req, res) => {
         const user = await userModel.findOne({ email: userCredentials.email });
         
         if (!user) {
-            return res.json({ message: "User not found" });
+            return res.status(404).json({ message: "User not found" });
         }
 
         const passwordMatch = await bcrypt.compare(userCredentials.password, user.password);
@@ -28,7 +27,7 @@ const loginController = async (req, res) => {
             };
             return res.json({ message: "Login successful", userData });
         } else {
-            return res.json({ message: "Incorrect password" });
+            return res.status(401).json({ message: "Incorrect password" });
         }
     } catch (error) {
         console.error("Login error:", error);
