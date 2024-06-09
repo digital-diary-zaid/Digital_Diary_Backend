@@ -14,7 +14,7 @@ const sessionSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now,
-        expires: '7d' // Optional: Automatically remove the session after 7 days
+        expires: '7d' // Automatically remove the session after 7 days
     }
 });
 

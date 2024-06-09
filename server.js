@@ -1,24 +1,11 @@
 require("./db/dbinit.js");
 require("dotenv").config();
 const express = require("express");
-const cors = require('cors');
 const expressSession = require("express-session");
 const MongoSessionStore = require('connect-mongodb-session')(expressSession);
+const cors = require('cors');
 const app = express();
-
-// Controllers
-const signupController = require("./controllers/signupController.js");
-const loginController = require("./controllers/loginController.js");
-const saveNoteController = require("./controllers/saveNoteController.js");
-const getNotesController = require("./controllers/getNotesController.js");
-const logoutController = require("./controllers/logoutController.js");
-const checkingAuthenticationController = require("./controllers/checkingAuthenticationController.js");
-const getNoteByUserController = require("./controllers/getNoteByUserController.js");
-const deleteNotesByIdController = require("./controllers/deleteNotesByIdController.js");
-const updateNoteController = require("./controllers/updateNoteController.js");
-
-// Middleware
-const authMiddleware = require("./middleware/authMiddleware.js");
+const authMiddleware = require("./middleware/authMiddleware");
 
 // CORS configuration
 app.use(cors({
@@ -35,15 +22,37 @@ app.use(express.urlencoded({ extended: true }));
 const store = new MongoSessionStore({
   uri: process.env.DBURL,
   collection: 'sessions',
+  connectionOptions: {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }
+});
+
+store.on('error', (error) => {
+  console.error('Session store error:', error);
 });
 
 // Session middleware
 app.use(expressSession({
-  secret: 'secret',
+  secret: process.env.SESSION_SECRET || 'secret',
   resave: false,
   saveUninitialized: false,
-  store: store
+  store: store,
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
+  }
 }));
+
+// Controllers
+const signupController = require("./controllers/signupController.js");
+const loginController = require("./controllers/loginController.js");
+const saveNoteController = require("./controllers/saveNoteController.js");
+const getNotesController = require("./controllers/getNotesController.js");
+const logoutController = require("./controllers/logoutController.js");
+const checkingAuthenticationController = require("./controllers/checkingAuthenticationController.js");
+const getNoteByUserController = require("./controllers/getNoteByUserController.js");
+const deleteNotesByIdController = require("./controllers/deleteNotesByIdController.js");
+const updateNoteController = require("./controllers/updateNoteController.js");
 
 // Port Details
 const port = process.env.PORT || 4000;

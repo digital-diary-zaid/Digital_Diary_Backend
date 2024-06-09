@@ -2,7 +2,7 @@ const { getSession } = require("../models/session.js");
 
 const authMiddleware = async (req, res, next) => {
     const token = req.session.token;
-
+    console.log("Req Session After Auth moddleware: ", req.session.token);
     if (!token) {
         return res.status(401).json({ message: "Unauthorized" });
     }
