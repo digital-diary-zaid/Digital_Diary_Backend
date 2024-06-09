@@ -1,5 +1,7 @@
 const userModel = require("../models/userModel.js");
 const bcrypt = require("bcrypt");
+const {sessionModel,createSession} = require('../models/session.js');
+
 
 const loginController = async (req, res) => {
     const userCredentials = {
@@ -17,14 +19,7 @@ const loginController = async (req, res) => {
         const passwordMatch = await bcrypt.compare(userCredentials.password, user.password);
         
         if (passwordMatch) {
-            // Create a custom session object and store it in MongoDB session collection
-            const sessionData = {
-                _id: user._id,
-                userId: user._id, // Store user ID
-                expires: Date.now() + (30 * 24 * 60 * 60 * 1000), // Set expiration time (30 days)
-            };
-
-            await req.sessionStore.set(req.sessionID, sessionData); // Store session data
+            await createSession(user._id);
             const userData = {
                 _id: user._id,
                 fullName: user.fullName,

@@ -1,11 +1,11 @@
 const noteModel = require("../models/noteModel.js");
 const userModel = require("../models/userModel.js");
+const {sessionModel,createSession} = require('../models/session.js');
 
 const getNotesController = async (req, res) => {
   try {
     // Retrieve session data from MongoDB session collection
-    const sessionData = await req.sessionStore.get(req.sessionID);
-    const loggedInUserId = sessionData?.userId;
+    const loggedInUserId = await sessionModel.find();
 
     if (!loggedInUserId) {
       return res.status(401).json({ message: "Unauthorized" });

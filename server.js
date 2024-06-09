@@ -7,8 +7,12 @@ const cors = require('cors');
 const app = express();
 const authMiddleware = require("./middleware/authMiddleware");
 
-app.use(cors({ credentials: true, origin: 'https://diztaldiary.netlify.app' }));
-
+//app.use(cors({ credentials: true, origin: 'https://diztaldiary.netlify.app' }));
+app.use(cors({
+  origin: "https://diztaldiary.netlify.app",
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials:"true"
+}))
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -18,27 +22,14 @@ const store = new MongoSessionStore({
   uri: process.env.DBURL,
   collection: 'sessions',
 });
-app.set("trust proxy", 1);
+
 // Session middleware
-app.use(
-  expressSession({
-    secret: process.env.SESSION_SECRET || "secret",
-    resave: false,
-    saveUninitialized: false,
-    proxy:true,
-    name: 'digZtalDiary',
-    store: store,
-    cookie: {
-      secure: true, // set to true if using https
-      httpOnly: false,
-      maxAge: 1000 * 60 * 60 * 24, // 1 day,
-      sameSite: 'none'
-    },
-  })
-);
-store.on('error', function(error) {
-  console.error('MongoDB session store error:', error);
-});
+app.use(expressSession({
+  secret: 'secret',
+  resave: false,
+  saveUninitialized: false,
+  store: store
+}));
 
 // Controllers
 const signupController = require("./controllers/signupController.js");
