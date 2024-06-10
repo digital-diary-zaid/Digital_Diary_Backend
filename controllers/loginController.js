@@ -1,7 +1,5 @@
 const userModel = require("../models/userModel.js");
 const bcrypt = require("bcrypt");
-const { createSession } = require('../models/session.js');
-const { v4: uuidv4 } = require('uuid');
 
 const loginController = async (req, res) => {
     const userCredentials = {
@@ -21,6 +19,7 @@ const loginController = async (req, res) => {
         if (passwordMatch) {
             req.session.userId = user._id; // Set userId in session
             console.log("Req Session After Login: ", req.session.userId);
+            console.log("Req Session After Login: ", req.session);
 
             const userData = {
                 _id: user._id,
