@@ -1,33 +1,23 @@
 const noteModel = require("../models/noteModel.js");
-const { getSession } = require("../models/session.js");
+const userModel = require("../models/userModel.js");
 
 const getNotesController = async (req, res) => {
-    const token = req.headers['authorization'];
+  try {
+    const loggedInUserId = req.session.userId; // Assuming you have the user ID in the request object
+    console.log("loggedInUserId in getNotes", loggedInUserId);
+    // Check if the user has notes
+    let userNotes = await noteModel.findOne({ userId: loggedInUserId });
 
-    if (!token) {
-        return res.status(401).json({ message: "Unauthorized" });
+    // If the user does not have any notes
+    if (!userNotes?.notes || userNotes?.notes?.length <= 0) {
+      return res.json({ message: "No notes" });
+    } else {
+      return res.json({ message: "Successfull", userNotes });
     }
-
-    try {
-        const session = await getSession(token);
-
-        if (!session) {
-            return res.status(401).json({ message: "Unauthorized" });
-        }
-
-        const userId = session.userId;
-
-        const userNotes = await noteModel.find({ userId });
-
-        if (userNotes.length === 0) {
-            return res.json({ message: "No notes" });
-        } else {
-            return res.json({ message: "Successfully retrieved notes", notes: userNotes });
-        }
-    } catch (error) {
-        console.error("Error getting notes:", error);
-        return res.status(500).json({ message: "Error getting notes" });
-    }
+  } catch (error) {
+    console.error("Error getting note:", error);
+    return res.status(500).json({ message: "Error getting note" });
+  }
 };
 
 module.exports = getNotesController;

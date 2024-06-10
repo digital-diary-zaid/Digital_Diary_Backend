@@ -19,11 +19,8 @@ const loginController = async (req, res) => {
         const passwordMatch = await bcrypt.compare(userCredentials.password, user.password);
 
         if (passwordMatch) {
-            const token = uuidv4(); // Generate a unique token
-            await createSession(user._id, token); // Save the session in the database with the token
-
-            req.session.token = token; // Set the token in the session
-            console.log("Req Session After Login: ", req.session.token);
+            req.session.userId = user._id; // Set userId in session
+            console.log("Req Session After Login: ", req.session.userId);
 
             const userData = {
                 _id: user._id,
@@ -32,7 +29,7 @@ const loginController = async (req, res) => {
                 phoneNumber: user.phoneNumber,
             };
 
-            return res.json({ message: "Login successful", userData, token });
+            return res.json({ message: "Login successful", userData});
         } else {
             return res.status(401).json({ message: "Incorrect password" });
         }

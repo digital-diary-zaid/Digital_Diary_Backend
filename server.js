@@ -4,15 +4,12 @@ const express = require("express");
 const expressSession = require("express-session");
 const MongoSessionStore = require('connect-mongodb-session')(expressSession);
 const cors = require('cors');
+
 const app = express();
 const authMiddleware = require("./middleware/authMiddleware");
 
 // CORS configuration
-app.use(cors({
-  origin: "https://diztaldiary.netlify.app",
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
-}));
+app.use(cors({credentials: true, origin: "https://diztaldiary.netlify.app" }));
 
 // Middleware
 app.use(express.json());
@@ -22,14 +19,6 @@ app.use(express.urlencoded({ extended: true }));
 const store = new MongoSessionStore({
   uri: process.env.DBURL,
   collection: 'sessions',
-  connectionOptions: {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }
-});
-
-store.on('error', (error) => {
-  console.error('Session store error:', error);
 });
 
 // Session middleware
@@ -38,11 +27,14 @@ app.use(expressSession({
   resave: false,
   saveUninitialized: false,
   store: store,
-  cookie: {
-    maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
-    sameSite: 'none' // Adjust as needed, usually 'strict' or 'lax' for most cases
-  }
 }));
+
+global.loggedIn = null;
+
+app.use("*", (req, res, next) => {
+  loggedIn = req.session.userId;
+  next();
+});
 
 // Controllers
 const signupController = require("./controllers/signupController.js");
@@ -55,11 +47,7 @@ const getNoteByUserController = require("./controllers/getNoteByUserController.j
 const deleteNotesByIdController = require("./controllers/deleteNotesByIdController.js");
 const updateNoteController = require("./controllers/updateNoteController.js");
 
-// Port Details
-const port = process.env.PORT || 4000;
-app.listen(port, () => {
-  console.log("App is running at port " + port);
-});
+
 
 // Routes
 app.post("/signup", signupController);
@@ -71,3 +59,9 @@ app.get("/checkAuth", authMiddleware, checkingAuthenticationController);
 app.post("/viewNoteByUser", authMiddleware, getNoteByUserController);
 app.post("/updateNote", authMiddleware, updateNoteController);
 app.post("/deleteNotesById", authMiddleware, deleteNotesByIdController);
+
+// Port Details
+const port = process.env.PORT || 4000;
+app.listen(port, () => {
+  console.log("App is running at port " + port);
+});
