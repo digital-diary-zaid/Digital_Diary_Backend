@@ -22,18 +22,14 @@ const store = new MongoSessionStore({
 });
 
 // Session middleware
-app.use(expressSession({
-  secret: process.env.SESSION_SECRET || 'secret',
-  resave: false,
-  saveUninitialized: false,
-  store: store,
-  cookie: {
-    maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
-    httpOnly: true,
-    secure: true, // Ensure HTTPS
-    sameSite: 'none' // Adjust based on requirements
-  }
-}));
+app.use(
+  expressSession({
+    secret: process.env.SESSION_SECRET || "secret",
+    resave: false,
+    saveUninitialized: false,
+    store: store,
+  })
+);
 
 global.loggedIn = null;
 
